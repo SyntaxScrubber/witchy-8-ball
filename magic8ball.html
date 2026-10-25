@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Witchy 8-Ball</title>
+    <style>
+        @font-face {
+            font-family: 'Kenia';
+            src: url('Kenia-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'Cinzel', Arial, serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle, #1a0b2e 0%, #080312 100%);
+            color: #d8b4fe;
+            margin: 0;
+            overflow: hidden;
+            background-size: cover;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
+            background-size: 550px 550px, 350px 350px;
+            background-position: 0 0, 40px 60px;
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 2;
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #d8b4fe;
+            text-shadow: 0 0 10px #7c3aed, 0 0 20px #581c87;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            font-family: serif;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        input {
+            padding: 12px 18px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 2px solid #581c87;
+            background-color: #0f051d;
+            color: #f3e8ff;
+            width: 250px;
+            box-shadow: inset 0 0 5px rgba(124, 58, 237, 0.5);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 8px rgba(168, 85, 247, 0.6), inset 0 0 5px rgba(168, 85, 247, 0.4);
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 2px solid #a855f7;
+            background: linear-gradient(135deg, #6b21a8 0%, #3b0764 100%);
+            color: #f3e8ff;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(107, 33, 168, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #7e22ce 0%, #4c0519 100%);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .orb-wrapper {
+            position: relative;
+            margin: 0 auto;
+            width: 320px;
+            height: 380px;
+        }
+
+        .orb-stand {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 90px;
+            background: linear-gradient(to bottom, #1e1b4b 0%, #030712 100%);
+            clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+            border: 3px solid #4a1d96;
+            border-radius: 5px;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.9), inset 0 5px 10px rgba(124, 58, 237, 0.4);
+            z-index: 1;
+        }
+
+        .orb-stand::after {
+            content: "";
+            position: absolute;
+            top: 25%; left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 30px;
+            background: radial-gradient(ellipse at center, #6366f1 0%, transparent 70%);
+            opacity: 0.5;
+        }
+
+        .eight-ball {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle at 50% 30%, #3b0764, #0f051d, #030008);
+            border-radius: 50%;
+            border: 4px solid #581c87;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 
+                0 0 30px rgba(124, 58, 237, 0.6), 
+                inset 0 0 50px rgba(0, 0, 0, 0.9),
+                0 0 60px rgba(168, 85, 247, 0.3);
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .fog {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            mix-blend-mode: screen;
+            animation: cosmicFog 8s infinite alternate;
+        }
+
+        @keyframes cosmicFog {
+            0% { opacity: 0.4; transform: scale(1); }
+            100% { opacity: 0.8; transform: scale(1.1) rotate(10deg); }
+        }
+
+        .inner-window {
+    width: 140px;
+    height: 140px;
+    background-color: #030008;
+    border-radius: 50%;
+    border: 2px dashed #a855f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    position: relative;
+    box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.4);
+    z-index: 3;
+    /* Add this new line: */
+    animation: liquidFloat 4s ease-in-out infinite; 
+}
+
+/* Add this new block right below it: */
+@keyframes liquidFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-6px) rotate(3deg); }
+}
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 104px solid rgba(88, 28, 135, 0.75);
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.6));
+        }
+
+        #answer {
+            position: absolute;
+            top: 40px; 
+            width: 100px;
+            font-family: "Kenia", sans-serif;
+            color: #f3e8ff;
+            font-size: 1.05rem;
+            line-height: 1.1;
+            font-weight: normal; 
+            text-shadow: 0 0 5px #c084fc, 0 0 12px #7c3aed;
+            margin: 0;
+            opacity: 1;
+            transform: translateY(0); /* Default resting position */
+            text-align: center;
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out; /* Controls the speed of the rise */
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .inner-shake {
+    animation: dieJostle 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes dieJostle {
+    0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    20% { transform: translate(-10px, -15px) rotate(-20deg) scale(0.9); }
+    40% { transform: translate(15px, 10px) rotate(15deg) scale(1.1); }
+    60% { transform: translate(-12px, 15px) rotate(-10deg) scale(0.85); }
+    80% { transform: translate(10px, -12px) rotate(18deg) scale(1.05); }
+
+        .portal-flash {
+            animation: pulseFlash 1.5s ease-out;
+        }
+
+        @keyframes pulseFlash {
+            0% { box-shadow: 0 0 5px #a855f7, inset 0 0 20px #7c3aed; }
+            50% { box-shadow: 0 0 45px #d8b4fe, inset 0 0 40px #a855f7; }
+            100% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>WITCH'S COVEN 8-BALL</h1>
+        
+        <div class="input-group">
+            <input type="text" id="question" placeholder="Whisper your query here...">
+            <button onclick="shakeBall()">Consult Orb</button>
+        </div>
+
+        <div class="orb-wrapper">
+            <div class="eight-ball" id="ball">
+                <div class="fog"></div>
+                <div class="inner-window" id="window">
+                    <div class="triangle"></div>
+                    <p id="answer">ASK</p>
+                </div>
+            </div>
+            <div class="orb-stand"></div>
+        </div>
+    </div>
+
+    <script>
+        const answers = [
+            "Certain, it is.", "Yes, decidedly.", "Without a doubt.", 
+            "Most likely.", "The spirits say yes.", "Outlook is good.", 
+            "Yes.", "Signs point to yes.", "Reply hazy, try again.", 
+            "Ask again later.", "Better not tell you now.", "Cannot predict now.", 
+            "Concentrate, ask again.", "Do not count on it.", "My reply is no.", 
+            "My sources say no.", "Outlook not so good.", "Very doubtful.", 
+            "The shadows say no.", "Fate is sealed."
+        ];
+
+       function shakeBall() {
+            const ball = document.getElementById('ball');
+            const portal = document.getElementById('window');
+            const answerText = document.getElementById('answer');
+            const questionInput = document.getElementById('question');
+
+            if (questionInput.value.trim() === "") {
+                alert("The spirits require you to pose a question first.");
+                return;
+            }
+
+            // Hide the text and push it down 20 pixels into the "fog"
+            answerText.style.opacity = "0";
+            answerText.style.transform = "translateY(20px)"; 
+            
+            ball.classList.add('shake');
+            portal.classList.add('portal-flash');
+            portal.classList.add('inner-shake');
+
+            setTimeout(() => {
+                ball.classList.remove('shake');
+                portal.classList.remove('portal-flash');
+                portal.classList.remove('inner-shake');
+
+                const randomIndex = Math.floor(Math.random() * answers.length);
+                answerText.innerText = answers[randomIndex].toUpperCase();
+                
+                // Fade the new text in and glide it upward back into place
+                answerText.style.opacity = "1";
+                answerText.style.transform = "translateY(0)"; 
+            }, 600);
+        }
+    </script>
+</body>
+</html>
